@@ -153,6 +153,7 @@
 \begin{frame}{Question to the audience}
 
 \LARGE{Do you understand (a bit) linear algebra?}
+
 \LARGE{Have you ever fitted a regression (in R) before today?}
 
 \end{frame}
@@ -573,7 +574,7 @@ for example:
 
 \begin{Shaded}
 \begin{Highlighting}[]
-\KeywordTok{p_load}\NormalTok{(broom)}
+\KeywordTok{p_load}\NormalTok{(dplyr, broom)}
 \KeywordTok{tidy}\NormalTok{(fit)}
 \end{Highlighting}
 \end{Shaded}
@@ -594,16 +595,15 @@ for example:
 
 \begin{Shaded}
 \begin{Highlighting}[]
-\KeywordTok{glance}\NormalTok{(fit)}
+\KeywordTok{glance}\NormalTok{(fit) }\OperatorTok{%>%}\StringTok{ }\KeywordTok{select}\NormalTok{(}\KeywordTok{matches}\NormalTok{(}\StringTok{"squared"}\NormalTok{))}
 \end{Highlighting}
 \end{Shaded}
 
 \begin{verbatim}
-## # A tibble: 1 x 11
-##   r.squared adj.r.squared sigma statistic p.value    df  logLik    AIC
-## *     <dbl>         <dbl> <dbl>     <dbl>   <dbl> <int>   <dbl>  <dbl>
-## 1     0.254         0.254  2.32     1455.       0     4 -38611. 77232.
-## # ... with 3 more variables: BIC <dbl>, deviance <dbl>, df.residual <int>
+## # A tibble: 1 x 2
+##   r.squared adj.r.squared
+## *     <dbl>         <dbl>
+## 1     0.254         0.254
 \end{verbatim}
 
 \end{frame}

@@ -40,6 +40,7 @@ knitr::opts_chunk$set(echo = FALSE, cache = TRUE)
 ## Question to the audience
 
 \LARGE{Do you understand (a bit) linear algebra?}
+
 \LARGE{Have you ever fitted a regression (in R) before today?}
 
 ## Linear regression
@@ -301,14 +302,14 @@ fit <- ddm(
 
 The package returns lm or glm objects instead of summaries. Doing that allows to use our functions in conjunction with broom or other packages, for example:
 ```{r ddm3, echo=TRUE}
-p_load(broom)
+p_load(dplyr, broom)
 tidy(fit)
 ```
 
 ## Double Demeaning
 
 ```{r ddm4, echo=TRUE}
-glance(fit)
+glance(fit) %>% select(matches("squared"))
 ```
 
 ## Double Demeaning
