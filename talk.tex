@@ -399,31 +399,6 @@ a standard estimation methods such as OLS:
 
 \begin{frame}{Trade barriers model}
 
-Provided trade barriers exists, the econometric literature proposes the
-Multilateral Resistance model defined by the equations:
-
-\[
-X_{ij}=\frac{Y_{i}Y_{j}}{Y}\frac{t_{ij}^{1-\sigma}}{P_{j}^{1-\sigma}\Pi_{i}^{1-\sigma}}
-\] with \[
-P_{i}^{1-\sigma}=\sum_{j}\frac{t_{ij}^{1-\sigma}}{\Pi_{j}^{1-\sigma}}\frac{Y_{j}}{Y}.
-\] and \[
-\Pi_{j}^{1-\sigma}=\sum_{i}\frac{t_{ij}^{1-\sigma}}{P_{i}^{1-\sigma}}\frac{Y_{i}}{Y}
-\]
-
-\end{frame}
-
-\begin{frame}{Trade barriers model}
-
-\begin{figure}
-\centering
-\includegraphics{pikachu.jpg}
-\caption{What?}
-\end{figure}
-
-\end{frame}
-
-\begin{frame}{Trade barriers model}
-
 Basically the model proposes that the exports \(X_{ij}\) from \(i\) to
 \(j\) are determined by the supply factors in \(i\), \(Y_{i}\), and the
 demand factors in \(j\), \(Y_{j}\), as well as the transaction costs
@@ -450,13 +425,39 @@ goods).
 
 The Multilateral Resistance terms are included via the terms \(P\),
 Inward Multilateral Resistance, and \(\Pi\), Outward Multilateral
-Resistance. The Inward Multilateral Resistance \(P_i\) is a function of
-the transaction costs of \(i\) to all trade partners \(j\). The Outward
-Multilateral Resistance \(\Pi_{j}\) is a function of the transaction
-costs of \(j\) to all trade partners \(i\) and their demand.
+Resistance.
+
+The Inward Multilateral Resistance \(P_i\) is a function of the
+transaction costs of \(i\) to all trade partners \(j\).
+
+The Outward Multilateral Resistance \(\Pi_{j}\) is a function of the
+transaction costs of \(j\) to all trade partners \(i\) and their demand.
 
 The Multilateral Resistance terms dependent on each other. Hence, the
-estimation of structural gravity models becomes complex.
+estimation of structural gravity models becomes \emph{complex}.
+
+\end{frame}
+
+\begin{frame}{Trade barriers model}
+
+\begin{figure}
+\centering
+\includegraphics{pikachu.jpg}
+\caption{What?}
+\end{figure}
+
+\end{frame}
+
+\begin{frame}{Trade barriers model}
+
+The econometric literature proposes the Multilateral Resistance model
+defined by the equations:
+
+\[
+X_{ij}=\frac{Y_{i}Y_{j}}{Y}\frac{t_{ij}^{1-\sigma}}{P_{j}^{1-\sigma}\Pi_{i}^{1-\sigma}}
+\] with \[
+P_{i}^{1-\sigma}=\sum_{j}\frac{t_{ij}^{1-\sigma}}{\Pi_{j}^{1-\sigma}}\frac{Y_{j}}{Y};\:\Pi_{j}^{1-\sigma}=\sum_{i}\frac{t_{ij}^{1-\sigma}}{P_{i}^{1-\sigma}}\frac{Y_{i}}{Y}
+\]
 
 \end{frame}
 
@@ -512,19 +513,20 @@ remove zero flows and distances.
 Double Demeaning subtracts importer and exporter averages on the left
 and right hand side of the respective gravity equation, and all
 unilateral influences including the Multilateral Resistance terms
-vanish. Therefore, no unilateral variables may be added as independent
-variables for the estimation.
+vanish.
+
+Therefore, no unilateral variables may be added as independent variables
+for the estimation.
 
 \end{frame}
 
 \begin{frame}{Double Demeaning}
 
 Our ddm function first logs the dependent variable and the distance
-variable. Afterwards, the dependent and independent variables are
-transformed in the following way (exemplary shown for trade flows,
-\(X_{ij}\)):
+variable.
 
-\[
+Afterwards, the dependent and independent variables are transformed in
+the following way (exemplary shown for trade flows, \(X_{ij}\)): \[
 (\log X_{ij})_{\text{DDM}} = (\log X_{ij}) - (\log X_{ij})_{\text{Origin Mean}} - (\log X_{ij})_{\text{Destination Mean}} + (\log X_{ij})_{\text{Mean}}.
 \]
 
@@ -534,9 +536,10 @@ transformed in the following way (exemplary shown for trade flows,
 
 One subtracts the mean value for the origin country and the mean value
 for the destination country and adds the overall mean value to the
-logged trade flows. This procedure is repeated for all dependent and
-independent variables. The transformed variables are then used for the
-estimation.
+logged trade flows.
+
+This procedure is repeated for all dependent and independent variables.
+The transformed variables are then used for the estimation.
 
 \end{frame}
 
@@ -607,29 +610,82 @@ for example:
 
 \begin{frame}[fragile]{Double Demeaning}
 
+How does the internal code work?
+
 \begin{Shaded}
 \begin{Highlighting}[]
-\KeywordTok{augment}\NormalTok{(fit)}
+\NormalTok{ddm <-}\StringTok{ }\ControlFlowTok{function}\NormalTok{(dependent_variable,}
+\NormalTok{                distance,}
+                \DataTypeTok{additional_regressors =} \OtherTok{NULL}\NormalTok{,}
+\NormalTok{                code_origin,}
+\NormalTok{                code_destination,}
+                \DataTypeTok{robust =} \OtherTok{FALSE}\NormalTok{,}
+\NormalTok{                data, ...) \{}
+\NormalTok{...}
 \end{Highlighting}
 \end{Shaded}
 
-\begin{verbatim}
-## # A tibble: 17,088 x 12
-##    y_log_ddm dist_log_ddm rta_ddm comcur_ddm contig_ddm  .fitted .se.fit
-##  *     <dbl>        <dbl>   <dbl>      <dbl>      <dbl>    <dbl>   <dbl>
-##  1  -0.710         0.540   0.0175    0.0562    -0.0435  -0.885   0.0205 
-##  2   0.00279      -0.0201  0.0318    0.0501    -0.00474  0.0616  0.00754
-##  3  -0.373         0.154  -0.197    -0.00870   -0.0502  -0.456   0.0126 
-##  4  -3.85         -0.758  -0.0408    0.0562    -0.0533   1.14    0.0298 
-##  5   0.301         0.223  -0.191    -0.00705   -0.0237  -0.534   0.0111 
-##  6  -3.45          0.599  -0.0747   -0.0747    -0.0762  -1.11    0.0176 
-##  7   1.80         -0.861   0.0562    0.0562    -0.0152   1.42    0.0276 
-##  8  -1.43         -0.0245 -0.127     0.0562    -0.0319  -0.0845  0.0135 
-##  9   3.10         -0.0260 -0.0195    0.0562    -0.0426  -0.00683 0.0104 
-## 10  -3.88          0.622  -0.0227    0.0562    -0.0486  -1.05    0.0217 
-## # ... with 17,078 more rows, and 5 more variables: .resid <dbl>,
-## #   .hat <dbl>, .sigma <dbl>, .cooksd <dbl>, .std.resid <dbl>
-\end{verbatim}
+\end{frame}
+
+\begin{frame}[fragile]{Double Demeaning}
+
+How does the internal code work?
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{# Checks}
+  \KeywordTok{stopifnot}\NormalTok{(}\KeywordTok{is.data.frame}\NormalTok{(data))}
+  \KeywordTok{stopifnot}\NormalTok{(}\KeywordTok{is.logical}\NormalTok{(robust))}
+\NormalTok{...}
+
+\CommentTok{# Transforming data, logging distances}
+\NormalTok{  d <-}\StringTok{ }\NormalTok{d }\OperatorTok{%>%}
+\StringTok{    }\KeywordTok{mutate}\NormalTok{(}
+      \DataTypeTok{dist_log =} \KeywordTok{log}\NormalTok{(}\OperatorTok{!!}\KeywordTok{sym}\NormalTok{(distance))}
+\NormalTok{    )}
+\NormalTok{...}
+\end{Highlighting}
+\end{Shaded}
+
+\end{frame}
+
+\begin{frame}[fragile]{Double Demeaning}
+
+How does the internal code work?
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{# Transforming data, logging flows}
+\NormalTok{  d <-}\StringTok{ }\NormalTok{d }\OperatorTok{%>%}
+\StringTok{    }\KeywordTok{mutate}\NormalTok{(}
+      \DataTypeTok{y_log =} \KeywordTok{log}\NormalTok{(}\OperatorTok{!!}\KeywordTok{sym}\NormalTok{(dependent_variable))}
+\NormalTok{    )}
+\NormalTok{...}
+\end{Highlighting}
+\end{Shaded}
+
+\end{frame}
+
+\begin{frame}[fragile]{Double Demeaning}
+
+How does the internal code work?
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{# Substracting the means}
+\NormalTok{  d <-}\StringTok{ }\NormalTok{d }\OperatorTok{%>%}
+\StringTok{    }\KeywordTok{mutate}\NormalTok{(}
+      \DataTypeTok{y_log_ddm =} \OperatorTok{!!}\KeywordTok{sym}\NormalTok{(}\StringTok{"y_log"}\NormalTok{),}
+      \DataTypeTok{dist_log_ddm =} \OperatorTok{!!}\KeywordTok{sym}\NormalTok{(}\StringTok{"dist_log"}\NormalTok{)}
+\NormalTok{    ) }\OperatorTok{%>%}
+\StringTok{    }\KeywordTok{group_by}\NormalTok{(}\OperatorTok{!!}\KeywordTok{sym}\NormalTok{(code_origin), }\DataTypeTok{add =} \OtherTok{FALSE}\NormalTok{) }\OperatorTok{%>%}
+\StringTok{    }\KeywordTok{mutate}\NormalTok{(}
+      \DataTypeTok{ym1 =} \KeywordTok{mean}\NormalTok{(}\OperatorTok{!!}\KeywordTok{sym}\NormalTok{(}\StringTok{"y_log_ddm"}\NormalTok{), }\DataTypeTok{na.rm =} \OtherTok{TRUE}\NormalTok{),}
+      \DataTypeTok{dm1 =} \KeywordTok{mean}\NormalTok{(}\OperatorTok{!!}\KeywordTok{sym}\NormalTok{(}\StringTok{"dist_log_ddm"}\NormalTok{), }\DataTypeTok{na.rm =} \OtherTok{TRUE}\NormalTok{)}
+\NormalTok{    ) }\OperatorTok{%>%}
+\NormalTok{...}
+\end{Highlighting}
+\end{Shaded}
 
 \end{frame}
 

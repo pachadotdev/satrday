@@ -20,7 +20,7 @@ classoption:
 ---
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = FALSE)
+knitr::opts_chunk$set(echo = FALSE, cache = TRUE)
 ```
 
 # Before we begin
@@ -194,26 +194,6 @@ $$
 
 ## Trade barriers model
 
-Provided trade barriers exists, the econometric literature proposes the Multilateral Resistance model defined by the equations:
-
-$$
-X_{ij}=\frac{Y_{i}Y_{j}}{Y}\frac{t_{ij}^{1-\sigma}}{P_{j}^{1-\sigma}\Pi_{i}^{1-\sigma}}
-$$
-with
-$$
-P_{i}^{1-\sigma}=\sum_{j}\frac{t_{ij}^{1-\sigma}}{\Pi_{j}^{1-\sigma}}\frac{Y_{j}}{Y}.
-$$
-and
-$$
-\Pi_{j}^{1-\sigma}=\sum_{i}\frac{t_{ij}^{1-\sigma}}{P_{i}^{1-\sigma}}\frac{Y_{i}}{Y}
-$$
-
-## Trade barriers model
-
-![What?](pikachu.jpg)
-
-## Trade barriers model
-
 Basically the model proposes that the exports $X_{ij}$ from $i$ to $j$ are determined by the supply factors in $i$, $Y_{i}$, and the demand factors in $j$, $Y_{j}$, as well as the transaction costs $t_{ij}$.
 
 Next to information on bilateral partners $i$ and $j$, information on the rest of the world is included in the gravity model with $Y=\sum_{i} Y_{i}= \sum_{j} Y_{j}$ that represents the worldwide sum of incomes (e.g. the world's GDP).
@@ -224,9 +204,29 @@ In this model $\sigma$ represents the elasticity of substitution between all goo
 
 ## Trade barriers model
 
-The Multilateral Resistance terms are included via the terms $P$, Inward Multilateral Resistance, and $\Pi$, Outward Multilateral Resistance. The Inward Multilateral Resistance $P_i$ is a function of the transaction costs of $i$ to all trade partners $j$. The Outward Multilateral Resistance $\Pi_{j}$ is a function of the transaction costs of $j$ to all trade partners $i$ and their demand.
+The Multilateral Resistance terms are included via the terms $P$, Inward Multilateral Resistance, and $\Pi$, Outward Multilateral Resistance. 
 
-The Multilateral Resistance terms dependent on each other. Hence, the estimation of structural gravity models becomes complex.
+The Inward Multilateral Resistance $P_i$ is a function of the transaction costs of $i$ to all trade partners $j$.
+
+The Outward Multilateral Resistance $\Pi_{j}$ is a function of the transaction costs of $j$ to all trade partners $i$ and their demand.
+
+The Multilateral Resistance terms dependent on each other. Hence, the estimation of structural gravity models becomes *complex*.
+
+## Trade barriers model
+
+![What?](pikachu.jpg)
+
+## Trade barriers model
+
+The econometric literature proposes the Multilateral Resistance model defined by the equations:
+
+$$
+X_{ij}=\frac{Y_{i}Y_{j}}{Y}\frac{t_{ij}^{1-\sigma}}{P_{j}^{1-\sigma}\Pi_{i}^{1-\sigma}}
+$$
+with
+$$
+P_{i}^{1-\sigma}=\sum_{j}\frac{t_{ij}^{1-\sigma}}{\Pi_{j}^{1-\sigma}}\frac{Y_{j}}{Y};\:\Pi_{j}^{1-\sigma}=\sum_{i}\frac{t_{ij}^{1-\sigma}}{P_{i}^{1-\sigma}}\frac{Y_{i}}{Y}
+$$
 
 ## Trade barriers model
 
@@ -254,19 +254,24 @@ can distort estimates, notwithstanding the functions provided within gravity pac
 
 ## Double Demeaning
 
-Double Demeaning subtracts importer and exporter averages on the left and right hand side of the respective gravity equation, and all unilateral influences including the Multilateral Resistance terms vanish. Therefore, no unilateral variables may be added as independent variables for the estimation.
+Double Demeaning subtracts importer and exporter averages on the left and right hand side of the respective gravity equation, and all unilateral influences including the Multilateral Resistance terms vanish. 
+
+Therefore, no unilateral variables may be added as independent variables for the estimation.
 
 ## Double Demeaning
 
-Our ddm function first logs the dependent variable and the distance variable. Afterwards, the dependent and independent variables are transformed in the following way (exemplary shown for trade flows, $X_{ij}$):
+Our ddm function first logs the dependent variable and the distance variable. 
 
+Afterwards, the dependent and independent variables are transformed in the following way (exemplary shown for trade flows, $X_{ij}$):
 $$
 (\log X_{ij})_{\text{DDM}} = (\log X_{ij}) - (\log X_{ij})_{\text{Origin Mean}} - (\log X_{ij})_{\text{Destination Mean}} + (\log X_{ij})_{\text{Mean}}.
 $$
 
 ## Double Demeaning
 
-One subtracts the mean value for the origin country and the mean value for the destination country and adds the overall mean value to the logged trade flows. This procedure is repeated for all dependent and independent variables. The transformed variables are then used for the estimation.
+One subtracts the mean value for the origin country and the mean value for the destination country and adds the overall mean value to the logged trade flows. 
+
+This procedure is repeated for all dependent and independent variables. The transformed variables are then used for the estimation.
 
 <!-- DDM is easily applied, but, as shown in @Head2014, its very sensitive to missing data. -->
 
@@ -308,8 +313,67 @@ glance(fit)
 
 ## Double Demeaning
 
-```{r ddm5, echo=TRUE}
-augment(fit)
+How does the internal code work?
+
+```{r ddm_code_1, eval=FALSE, echo=TRUE}
+ddm <- function(dependent_variable,
+                distance,
+                additional_regressors = NULL,
+                code_origin,
+                code_destination,
+                robust = FALSE,
+                data, ...) {
+...
+```
+
+## Double Demeaning
+
+How does the internal code work?
+
+```{r ddm_code_2, eval=FALSE, echo=TRUE}
+# Checks
+  stopifnot(is.data.frame(data))
+  stopifnot(is.logical(robust))
+...
+
+# Transforming data, logging distances
+  d <- d %>%
+    mutate(
+      dist_log = log(!!sym(distance))
+    )
+...
+```
+
+## Double Demeaning
+
+How does the internal code work?
+
+```{r ddm_code_3, eval=FALSE, echo=TRUE}
+# Transforming data, logging flows
+  d <- d %>%
+    mutate(
+      y_log = log(!!sym(dependent_variable))
+    )
+...
+```
+
+## Double Demeaning
+
+How does the internal code work?
+
+```{r ddm_code_4, eval=FALSE, echo=TRUE}
+# Substracting the means
+  d <- d %>%
+    mutate(
+      y_log_ddm = !!sym("y_log"),
+      dist_log_ddm = !!sym("dist_log")
+    ) %>%
+    group_by(!!sym(code_origin), add = FALSE) %>%
+    mutate(
+      ym1 = mean(!!sym("y_log_ddm"), na.rm = TRUE),
+      dm1 = mean(!!sym("dist_log_ddm"), na.rm = TRUE)
+    ) %>%
+...
 ```
 
 # Code and documentation
