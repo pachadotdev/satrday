@@ -1,0 +1,665 @@
+\documentclass[ignorenonframetext,compress,aspectratio=169]{beamer}
+\setbeamertemplate{caption}[numbered]
+\setbeamertemplate{caption label separator}{: }
+\setbeamercolor{caption name}{fg=normal text.fg}
+\beamertemplatenavigationsymbolsempty
+\usepackage{lmodern}
+\usepackage{amssymb,amsmath}
+\usepackage{ifxetex,ifluatex}
+\usepackage{fixltx2e} % provides \textsubscript
+\ifnum 0\ifxetex 1\fi\ifluatex 1\fi=0 % if pdftex
+  \usepackage[T1]{fontenc}
+  \usepackage[utf8]{inputenc}
+\else % if luatex or xelatex
+  \ifxetex
+    \usepackage{mathspec}
+  \else
+    \usepackage{fontspec}
+  \fi
+  \defaultfontfeatures{Ligatures=TeX,Scale=MatchLowercase}
+\fi
+\usetheme[]{metropolis}
+% use upquote if available, for straight quotes in verbatim environments
+\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
+% use microtype if available
+\IfFileExists{microtype.sty}{%
+\usepackage{microtype}
+\UseMicrotypeSet[protrusion]{basicmath} % disable protrusion for tt fonts
+}{}
+\newif\ifbibliography
+\usepackage{natbib}
+\bibliographystyle{plainnat}
+\hypersetup{
+            pdftitle={Econometrics in R: Estimation of Gravity Models},
+            pdfauthor={Pachá},
+            pdfborder={0 0 0},
+            breaklinks=true}
+\urlstyle{same}  % don't use monospace font for urls
+\usepackage{color}
+\usepackage{fancyvrb}
+\newcommand{\VerbBar}{|}
+\newcommand{\VERB}{\Verb[commandchars=\\\{\}]}
+\DefineVerbatimEnvironment{Highlighting}{Verbatim}{commandchars=\\\{\}}
+% Add ',fontsize=\small' for more characters per line
+\usepackage{framed}
+\definecolor{shadecolor}{RGB}{248,248,248}
+\newenvironment{Shaded}{\begin{snugshade}}{\end{snugshade}}
+\newcommand{\KeywordTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{\textbf{#1}}}
+\newcommand{\DataTypeTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{#1}}
+\newcommand{\DecValTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
+\newcommand{\BaseNTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
+\newcommand{\FloatTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
+\newcommand{\ConstantTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\CharTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\SpecialCharTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\StringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\VerbatimStringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\SpecialStringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\ImportTok}[1]{#1}
+\newcommand{\CommentTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textit{#1}}}
+\newcommand{\DocumentationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\AnnotationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\CommentVarTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\OtherTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{#1}}
+\newcommand{\FunctionTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\VariableTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\ControlFlowTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{\textbf{#1}}}
+\newcommand{\OperatorTok}[1]{\textcolor[rgb]{0.81,0.36,0.00}{\textbf{#1}}}
+\newcommand{\BuiltInTok}[1]{#1}
+\newcommand{\ExtensionTok}[1]{#1}
+\newcommand{\PreprocessorTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textit{#1}}}
+\newcommand{\AttributeTok}[1]{\textcolor[rgb]{0.77,0.63,0.00}{#1}}
+\newcommand{\RegionMarkerTok}[1]{#1}
+\newcommand{\InformationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\WarningTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\AlertTok}[1]{\textcolor[rgb]{0.94,0.16,0.16}{#1}}
+\newcommand{\ErrorTok}[1]{\textcolor[rgb]{0.64,0.00,0.00}{\textbf{#1}}}
+\newcommand{\NormalTok}[1]{#1}
+\usepackage{graphicx,grffile}
+\makeatletter
+\def\maxwidth{\ifdim\Gin@nat@width>\linewidth\linewidth\else\Gin@nat@width\fi}
+\def\maxheight{\ifdim\Gin@nat@height>\textheight0.8\textheight\else\Gin@nat@height\fi}
+\makeatother
+% Scale images if necessary, so that they will not overflow the page
+% margins by default, and it is still possible to overwrite the defaults
+% using explicit options in \includegraphics[width, height, ...]{}
+\setkeys{Gin}{width=\maxwidth,height=\maxheight,keepaspectratio}
+
+% Prevent slide breaks in the middle of a paragraph:
+\widowpenalties 1 10000
+\raggedbottom
+
+\AtBeginPart{
+  \let\insertpartnumber\relax
+  \let\partname\relax
+  \frame{\partpage}
+}
+\AtBeginSection{
+  \ifbibliography
+  \else
+    \let\insertsectionnumber\relax
+    \let\sectionname\relax
+    \frame{\sectionpage}
+  \fi
+}
+\AtBeginSubsection{
+  \let\insertsubsectionnumber\relax
+  \let\subsectionname\relax
+  \frame{\subsectionpage}
+}
+
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{6pt plus 2pt minus 1pt}
+\setlength{\emergencystretch}{3em}  % prevent overfull lines
+\providecommand{\tightlist}{%
+  \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+\setcounter{secnumdepth}{0}
+\hypersetup{colorlinks,citecolor=orange,filecolor=red,linkcolor=brown,urlcolor=blue}
+%\usepackage[semibold]{sourcesanspro}
+\usepackage{fontawesome}
+\renewcommand{\vec}[1]{\boldsymbol{#1}}
+\newcommand{\R}{\mathbb{R}}
+
+\title{Econometrics in R: Estimation of Gravity Models}
+\author{Pachá}
+\institute{satRday Santiago}
+\date{Dec 15, 2018}
+
+\begin{document}
+\frame{\titlepage}
+
+\section{Before we begin}\label{before-we-begin}
+
+\begin{frame}{This is about a new R package}
+
+\begin{figure}
+\centering
+\includegraphics{hexicon.PNG}
+\caption{Hex sticker}
+\end{figure}
+
+\end{frame}
+
+\begin{frame}[fragile]{Where to reach me}
+
+\faTwitter or \faGithub: pachamaltese
+
+\faEnvelopeO: \texttt{m\ vargas\ at\ dcc\ dot\ uchile\ dot\ cl}
+
+\faPhone: +1 XXX XXX XX XX or +56 X X XXX XX XX
+
+\end{frame}
+
+\begin{frame}{Question to the audience}
+
+\LARGE{Do you understand (a bit) linear algebra?}
+\LARGE{Have you ever fitted a regression (in R) before today?}
+
+\end{frame}
+
+\begin{frame}{Linear regression}
+
+Let \(\vec{y} \in \R^n\) be the outcome and \(X \in \R^{n\times p}\) be
+the design matrix in the context of a general model with intercept:
+\[\vec{y} = X\vec{\beta} + \vec{e}\]
+
+Being: \[
+\underset{n\times 1}{\vec{y}} = \begin{pmatrix}y_0 \cr y_1 \cr \vdots \cr y_n\end{pmatrix}
+\text{ and }
+\underset{n\times p}{X} = \begin{pmatrix}1 & x_{11} & & x_{1p} \cr 1 & x_{21} & & x_{2p} \cr & \ddots & \cr 1 & x_{n1} & & x_{np}\end{pmatrix} = (\vec{1} \: \vec{x}_1 \: \ldots \: \vec{x}_p)
+\]
+
+\end{frame}
+
+\begin{frame}{Linear regression}
+
+In linear models the aim is to minimize the error term by chosing
+\(\hat{\vec{\beta}}\). One possibility is to minimize the squared error
+by solving this optimization problem:
+
+\begin{equation}
+\label{min}
+\displaystyle \min_{\vec{\beta}} S = \|\vec{y} - X\vec{\beta}\|^2
+\end{equation}
+
+\end{frame}
+
+\begin{frame}{Linear regression}
+
+Books such as \citet{Baltagi2011} discuss how to solve \eqref{min} and
+other equivalent approaches that result in this optimal estimator:
+
+\begin{equation}
+\label{beta}
+\hat{\vec{\beta}} = (X^tX)^{-1} X^t\vec{y}
+\end{equation}
+
+\end{frame}
+
+\begin{frame}{Linear regression}
+
+With one independent variable and intercept, this is
+\(y_i = \beta_0 + \beta_1 x_{i1} + e_i\), equation \(\eqref{beta}\)
+means:
+
+\begin
+{equation}
+\label{beta2}
+\hat{\beta}_1 = cor(\vec{y},\vec{x}) \cdot \frac{sd(\vec{y})}{sd(\vec{x})} \text{ and } \hat{\beta}_0 = \bar{y} - \hat{\beta}_1 \bar{\vec{x}}
+\end{equation}
+
+\end{frame}
+
+\begin{frame}[fragile]{Coding example with mtcars dataset}
+
+Consider the model: \[mpg_i = \beta_1 wt_i + \beta_2 cyl_i + e_i\]
+
+This is how to write that model in R notation:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{lm}\NormalTok{(mpg }\OperatorTok{~}\StringTok{ }\NormalTok{wt }\OperatorTok{+}\StringTok{ }\NormalTok{cyl, }\DataTypeTok{data =}\NormalTok{ mtcars)}
+\end{Highlighting}
+\end{Shaded}
+
+\end{frame}
+
+\begin{frame}[fragile]{Coding example with mtcars dataset}
+
+Or written in matrix form:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{y <-}\StringTok{ }\NormalTok{mtcars}\OperatorTok{$}\NormalTok{mpg}
+\NormalTok{x0 <-}\StringTok{ }\KeywordTok{rep}\NormalTok{(}\DecValTok{1}\NormalTok{, }\KeywordTok{length}\NormalTok{(y))}
+\NormalTok{x1 <-}\StringTok{ }\NormalTok{mtcars}\OperatorTok{$}\NormalTok{wt}
+\NormalTok{x2 <-}\StringTok{ }\NormalTok{mtcars}\OperatorTok{$}\NormalTok{cyl}
+\NormalTok{X <-}\StringTok{ }\KeywordTok{cbind}\NormalTok{(x0,x1,x2)}
+\end{Highlighting}
+\end{Shaded}
+
+\end{frame}
+
+\begin{frame}[fragile]{Coding example with mtcars dataset}
+
+It's the same to use \texttt{lm} or to perform a matrix multiplication
+because of equation \(\eqref{beta}\):
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{fit <-}\StringTok{ }\KeywordTok{lm}\NormalTok{(y }\OperatorTok{~}\StringTok{ }\NormalTok{x1 }\OperatorTok{+}\StringTok{ }\NormalTok{x2)}
+\NormalTok{beta <-}\StringTok{ }\KeywordTok{solve}\NormalTok{(}\KeywordTok{t}\NormalTok{(X)}\OperatorTok{%*%}\NormalTok{X) }\OperatorTok{%*%}\StringTok{ }\NormalTok{(}\KeywordTok{t}\NormalTok{(X)}\OperatorTok{%*%}\NormalTok{y)}
+\end{Highlighting}
+\end{Shaded}
+
+\end{frame}
+
+\begin{frame}[fragile]{Coding example with mtcars dataset}
+
+It's the same to use \texttt{lm} or to perform a matrix multiplication
+because of equation \(\eqref{beta}\):
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{coefficients}\NormalTok{(fit)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## (Intercept)          x1          x2 
+##   39.686261   -3.190972   -1.507795
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{beta}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##         [,1]
+## x0 39.686261
+## x1 -3.190972
+## x2 -1.507795
+\end{verbatim}
+
+\end{frame}
+
+\begin{frame}[fragile]{Coding example with Galton dataset}
+
+Equation \(\eqref{beta2}\) can be verified with R commands:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\ControlFlowTok{if}\NormalTok{ (}\OperatorTok{!}\KeywordTok{require}\NormalTok{(pacman)) }\KeywordTok{install.packages}\NormalTok{(}\StringTok{"pacman"}\NormalTok{)}
+\KeywordTok{p_load}\NormalTok{(HistData)}
+
+\NormalTok{y <-}\StringTok{ }\NormalTok{Galton}\OperatorTok{$}\NormalTok{child}
+\NormalTok{x <-}\StringTok{ }\NormalTok{Galton}\OperatorTok{$}\NormalTok{parent}
+\NormalTok{beta1 <-}\StringTok{ }\KeywordTok{cor}\NormalTok{(y, x) }\OperatorTok{*}\StringTok{  }\KeywordTok{sd}\NormalTok{(y) }\OperatorTok{/}\StringTok{ }\KeywordTok{sd}\NormalTok{(x)}
+\NormalTok{beta0 <-}\StringTok{ }\KeywordTok{mean}\NormalTok{(y) }\OperatorTok{-}\StringTok{ }\NormalTok{beta1 }\OperatorTok{*}\StringTok{ }\KeywordTok{mean}\NormalTok{(x)}
+\KeywordTok{c}\NormalTok{(beta0, beta1)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] 23.9415302  0.6462906
+\end{verbatim}
+
+\end{frame}
+
+\begin{frame}[fragile]{Coding example with Galton dataset}
+
+\begin{verbatim}
+## 
+## Call:
+## lm(formula = y ~ x)
+## 
+## Coefficients:
+## (Intercept)            x  
+##     23.9415       0.6463
+\end{verbatim}
+
+\end{frame}
+
+\section{Simple gravity model}\label{simple-gravity-model}
+
+\begin{frame}{Simple gravity model}
+
+The main reference for this section is \citet{Woelver2018} and the
+references therein.
+
+Gravity models in their traditional form are inspired by Newton law of
+gravitation: \[
+F_{ij}=G\frac{M_{i}M_{j}}{D^{2}_{ij}}.
+\]
+
+The force \(F\) between two bodies \(i\) and \(j\) with \(i \neq j\) is
+proportional to the masses \(M\) of these bodies and inversely
+proportional to the square of their geographical distance \(D\). \(G\)
+is a constant and as such of no major concern.
+
+\end{frame}
+
+\begin{frame}{Simple gravity model}
+
+The underlying idea of a traditional gravity model, shown for
+international trade, is equally simple:
+
+\[
+X_{ij}=G\frac{Y_{i}^{\beta_{1}}Y_{j}^{\beta_{2}}}{D_{ij}^{\beta_{3}}}.
+\]
+
+The trade flow \(X\) is explained by \(Y_{i}\) and \(Y_{j}\) that are
+the masses of the exporting and importing country (e.g.~the GDP) and
+\(D_{ij}\) that is the distance between the countries.
+
+\end{frame}
+
+\begin{frame}{Simple gravity model}
+
+\LARGE{This is also used to study urban policies and migration flows!}
+
+\end{frame}
+
+\begin{frame}{Simple gravity model}
+
+Dummy variables such as common borders \(contig\) or regional trade
+agreements \(rta\) can be added to the model. Let \(t_{ij}\) be the
+transaction cost defined as:
+
+\[
+t_{ij}= D_{ij} \exp(contig_{ij} + rta_{ij})
+\]
+
+\end{frame}
+
+\begin{frame}{Simple gravity model}
+
+So that the model with friction becomes:
+
+\[
+X_{ij}=G\frac{Y_{i}^{\beta_{1}}Y_{j}^{\beta_{2}}}{t_{ij}^{\beta_{3}}}.
+\]
+
+\end{frame}
+
+\begin{frame}{Simple gravity model}
+
+A logarithmic operator can be applied to form a log-linear model and use
+a standard estimation methods such as OLS:
+
+\[
+\log X_{ij}=\beta_{0}\log G +\beta_{1}\log Y_{i}+\beta_{2}\log Y_{j}+\beta_{3}\log D_{ij}+\beta_{4}contig_{ij}+\beta_{5}rta_{ij}
+\]
+
+\end{frame}
+
+\section{Trade barriers model}\label{trade-barriers-model}
+
+\begin{frame}{Trade barriers model}
+
+Provided trade barriers exists, the econometric literature proposes the
+Multilateral Resistance model defined by the equations:
+
+\[
+X_{ij}=\frac{Y_{i}Y_{j}}{Y}\frac{t_{ij}^{1-\sigma}}{P_{j}^{1-\sigma}\Pi_{i}^{1-\sigma}}
+\] with \[
+P_{i}^{1-\sigma}=\sum_{j}\frac{t_{ij}^{1-\sigma}}{\Pi_{j}^{1-\sigma}}\frac{Y_{j}}{Y}.
+\] and \[
+\Pi_{j}^{1-\sigma}=\sum_{i}\frac{t_{ij}^{1-\sigma}}{P_{i}^{1-\sigma}}\frac{Y_{i}}{Y}
+\]
+
+\end{frame}
+
+\begin{frame}{Trade barriers model}
+
+\begin{figure}
+\centering
+\includegraphics{pikachu.jpg}
+\caption{What?}
+\end{figure}
+
+\end{frame}
+
+\begin{frame}{Trade barriers model}
+
+Basically the model proposes that the exports \(X_{ij}\) from \(i\) to
+\(j\) are determined by the supply factors in \(i\), \(Y_{i}\), and the
+demand factors in \(j\), \(Y_{j}\), as well as the transaction costs
+\(t_{ij}\).
+
+Next to information on bilateral partners \(i\) and \(j\), information
+on the rest of the world is included in the gravity model with
+\(Y=\sum_{i} Y_{i}= \sum_{j} Y_{j}\) that represents the worldwide sum
+of incomes (e.g.~the world's GDP).
+
+\end{frame}
+
+\begin{frame}{Trade barriers model}
+
+In this model \(\sigma\) represents the elasticity of substitution
+between all goods. A key assumption is to take a fixed value
+\(\sigma > 1\) in order to account for the preference for a variation of
+goods (e.g.~in this model goods can be replaced for other similar
+goods).
+
+\end{frame}
+
+\begin{frame}{Trade barriers model}
+
+The Multilateral Resistance terms are included via the terms \(P\),
+Inward Multilateral Resistance, and \(\Pi\), Outward Multilateral
+Resistance. The Inward Multilateral Resistance \(P_i\) is a function of
+the transaction costs of \(i\) to all trade partners \(j\). The Outward
+Multilateral Resistance \(\Pi_{j}\) is a function of the transaction
+costs of \(j\) to all trade partners \(i\) and their demand.
+
+The Multilateral Resistance terms dependent on each other. Hence, the
+estimation of structural gravity models becomes complex.
+
+\end{frame}
+
+\begin{frame}{Trade barriers model}
+
+\begin{figure}
+\centering
+\includegraphics{raichu.jpg}
+\caption{Again, what?}
+\end{figure}
+
+\end{frame}
+
+\section{Model estimation}\label{model-estimation}
+
+\begin{frame}{Model estimation}
+
+To estimate gravity equations you need a square dataset including
+bilateral flows defined by the argument dependent\_variable, a distance
+measure defined by the argument distance that is the key regressor, and
+other potential influences (e.g.~contiguity and common currency) given
+as a vector in additional\_regressors are required.
+
+Some estimation methods require ISO codes or similar of type character
+variables to compute particular country effects. Make sure the origin
+and destination codes are of type ``character''.
+
+\end{frame}
+
+\begin{frame}{Model estimation}
+
+The rule of thumb for regressors or independent variables consists in:
+
+\begin{itemize}
+\tightlist
+\item
+  All dummy variables should be of type numeric (0/1).
+\item
+  If an independent variable is defined as a ratio, it should be logged.
+\end{itemize}
+
+The user should perform some data cleaning beforehand to remove
+observations that contain entries that can distort estimates,
+notwithstanding the functions provided within gravity package will
+remove zero flows and distances.
+
+\end{frame}
+
+\section{Examples}\label{examples}
+
+\begin{frame}{Double Demeaning}
+
+Double Demeaning subtracts importer and exporter averages on the left
+and right hand side of the respective gravity equation, and all
+unilateral influences including the Multilateral Resistance terms
+vanish. Therefore, no unilateral variables may be added as independent
+variables for the estimation.
+
+\end{frame}
+
+\begin{frame}{Double Demeaning}
+
+Our ddm function first logs the dependent variable and the distance
+variable. Afterwards, the dependent and independent variables are
+transformed in the following way (exemplary shown for trade flows,
+\(X_{ij}\)):
+
+\[
+(\log X_{ij})_{\text{DDM}} = (\log X_{ij}) - (\log X_{ij})_{\text{Origin Mean}} - (\log X_{ij})_{\text{Destination Mean}} + (\log X_{ij})_{\text{Mean}}.
+\]
+
+\end{frame}
+
+\begin{frame}{Double Demeaning}
+
+One subtracts the mean value for the origin country and the mean value
+for the destination country and adds the overall mean value to the
+logged trade flows. This procedure is repeated for all dependent and
+independent variables. The transformed variables are then used for the
+estimation.
+
+\end{frame}
+
+\begin{frame}[fragile]{Double Demeaning}
+
+An example of how to apply the function ddm to an example dataset in
+gravity and the resulting output is shown in the following:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{p_load}\NormalTok{(gravity)}
+
+\NormalTok{fit <-}\StringTok{ }\KeywordTok{ddm}\NormalTok{(}
+    \DataTypeTok{dependent_variable =} \StringTok{"flow"}\NormalTok{,}
+    \DataTypeTok{distance =} \StringTok{"distw"}\NormalTok{,}
+    \DataTypeTok{additional_regressors =} \KeywordTok{c}\NormalTok{(}\StringTok{"rta"}\NormalTok{, }\StringTok{"comcur"}\NormalTok{, }\StringTok{"contig"}\NormalTok{),}
+    \DataTypeTok{code_origin =} \StringTok{"iso_o"}\NormalTok{,}
+    \DataTypeTok{code_destination =} \StringTok{"iso_d"}\NormalTok{,}
+    \DataTypeTok{data =}\NormalTok{ gravity_no_zeros}
+\NormalTok{  )}
+\end{Highlighting}
+\end{Shaded}
+
+\end{frame}
+
+\begin{frame}[fragile]{Double Demeaning}
+
+The package returns lm or glm objects instead of summaries. Doing that
+allows to use our functions in conjunction with broom or other packages,
+for example:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{p_load}\NormalTok{(broom)}
+\KeywordTok{tidy}\NormalTok{(fit)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## # A tibble: 4 x 5
+##   term         estimate std.error statistic  p.value
+##   <chr>           <dbl>     <dbl>     <dbl>    <dbl>
+## 1 dist_log_ddm   -1.60     0.0331    -48.4  0.      
+## 2 rta_ddm         0.797    0.0700     11.4  6.54e-30
+## 3 comcur_ddm      0.174    0.146       1.19 2.34e- 1
+## 4 contig_ddm      1.00     0.120       8.36 6.62e-17
+\end{verbatim}
+
+\end{frame}
+
+\begin{frame}[fragile]{Double Demeaning}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{glance}\NormalTok{(fit)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## # A tibble: 1 x 11
+##   r.squared adj.r.squared sigma statistic p.value    df  logLik    AIC
+## *     <dbl>         <dbl> <dbl>     <dbl>   <dbl> <int>   <dbl>  <dbl>
+## 1     0.254         0.254  2.32     1455.       0     4 -38611. 77232.
+## # ... with 3 more variables: BIC <dbl>, deviance <dbl>, df.residual <int>
+\end{verbatim}
+
+\end{frame}
+
+\begin{frame}[fragile]{Double Demeaning}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{augment}\NormalTok{(fit)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## # A tibble: 17,088 x 12
+##    y_log_ddm dist_log_ddm rta_ddm comcur_ddm contig_ddm  .fitted .se.fit
+##  *     <dbl>        <dbl>   <dbl>      <dbl>      <dbl>    <dbl>   <dbl>
+##  1  -0.710         0.540   0.0175    0.0562    -0.0435  -0.885   0.0205 
+##  2   0.00279      -0.0201  0.0318    0.0501    -0.00474  0.0616  0.00754
+##  3  -0.373         0.154  -0.197    -0.00870   -0.0502  -0.456   0.0126 
+##  4  -3.85         -0.758  -0.0408    0.0562    -0.0533   1.14    0.0298 
+##  5   0.301         0.223  -0.191    -0.00705   -0.0237  -0.534   0.0111 
+##  6  -3.45          0.599  -0.0747   -0.0747    -0.0762  -1.11    0.0176 
+##  7   1.80         -0.861   0.0562    0.0562    -0.0152   1.42    0.0276 
+##  8  -1.43         -0.0245 -0.127     0.0562    -0.0319  -0.0845  0.0135 
+##  9   3.10         -0.0260 -0.0195    0.0562    -0.0426  -0.00683 0.0104 
+## 10  -3.88          0.622  -0.0227    0.0562    -0.0486  -1.05    0.0217 
+## # ... with 17,078 more rows, and 5 more variables: .resid <dbl>,
+## #   .hat <dbl>, .sigma <dbl>, .cooksd <dbl>, .std.resid <dbl>
+\end{verbatim}
+
+\end{frame}
+
+\section{Code and documentation}\label{code-and-documentation}
+
+\begin{frame}{Code and documentation}
+
+\LARGE{github.com/pachamaltese/gravity}
+
+\LARGE{pacha.hk/gravity}
+
+\end{frame}
+
+\section{Questions?}\label{questions}
+
+\begin{frame}{Questions?}
+
+\LARGE{Thanks for your attention!}
+
+\end{frame}
+
+\section{References}\label{references}
+
+\begin{frame}{References}
+
+\end{frame}
+
+\begin{frame}[allowframebreaks]{}
+\bibliographytrue
+\bibliography{references.bib}
+\end{frame}
+
+\end{document}
