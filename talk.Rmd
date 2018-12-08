@@ -124,7 +124,7 @@ beta
 Equation $\eqref{beta2}$ can be verified with R commands:
 ```{r anova_galton_example1, warning=FALSE, message=FALSE, echo=TRUE}
 if (!require(pacman)) install.packages("pacman")
-p_load(HistData)
+pacman::p_load(HistData)
 
 y <- Galton$child
 x <- Galton$parent
@@ -139,6 +139,10 @@ c(beta0, beta1)
 # comparing with lm results
 lm(y ~ x)
 ```
+
+## Coding example with Galton dataset
+
+![It's a match](komolozupo.jpg)
 
 # Simple gravity model
 
@@ -280,7 +284,7 @@ This procedure is repeated for all dependent and independent variables. The tran
 
 An example of how to apply the function ddm to an example dataset in gravity and the resulting output is shown in the following:
 ```{r ddm, echo=TRUE}
-p_load(gravity)
+pacman::p_load(gravity)
 
 fit <- ddm(
     dependent_variable = "flow",
@@ -302,7 +306,7 @@ fit <- ddm(
 
 The package returns lm or glm objects instead of summaries. Doing that allows to use our functions in conjunction with broom or other packages, for example:
 ```{r ddm3, echo=TRUE}
-p_load(dplyr, broom)
+pacman::p_load(dplyr, broom)
 tidy(fit)
 ```
 

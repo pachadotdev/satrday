@@ -293,7 +293,7 @@ Equation \(\eqref{beta2}\) can be verified with R commands:
 \begin{Shaded}
 \begin{Highlighting}[]
 \ControlFlowTok{if}\NormalTok{ (}\OperatorTok{!}\KeywordTok{require}\NormalTok{(pacman)) }\KeywordTok{install.packages}\NormalTok{(}\StringTok{"pacman"}\NormalTok{)}
-\KeywordTok{p_load}\NormalTok{(HistData)}
+\NormalTok{pacman}\OperatorTok{::}\KeywordTok{p_load}\NormalTok{(HistData)}
 
 \NormalTok{y <-}\StringTok{ }\NormalTok{Galton}\OperatorTok{$}\NormalTok{child}
 \NormalTok{x <-}\StringTok{ }\NormalTok{Galton}\OperatorTok{$}\NormalTok{parent}
@@ -320,6 +320,16 @@ Equation \(\eqref{beta2}\) can be verified with R commands:
 ## (Intercept)            x  
 ##     23.9415       0.6463
 \end{verbatim}
+
+\end{frame}
+
+\begin{frame}{Coding example with Galton dataset}
+
+\begin{figure}
+\centering
+\includegraphics{komolozupo.jpg}
+\caption{It's a match}
+\end{figure}
 
 \end{frame}
 
@@ -551,7 +561,7 @@ gravity and the resulting output is shown in the following:
 
 \begin{Shaded}
 \begin{Highlighting}[]
-\KeywordTok{p_load}\NormalTok{(gravity)}
+\NormalTok{pacman}\OperatorTok{::}\KeywordTok{p_load}\NormalTok{(gravity)}
 
 \NormalTok{fit <-}\StringTok{ }\KeywordTok{ddm}\NormalTok{(}
     \DataTypeTok{dependent_variable =} \StringTok{"flow"}\NormalTok{,}
@@ -574,7 +584,7 @@ for example:
 
 \begin{Shaded}
 \begin{Highlighting}[]
-\KeywordTok{p_load}\NormalTok{(dplyr, broom)}
+\NormalTok{pacman}\OperatorTok{::}\KeywordTok{p_load}\NormalTok{(dplyr, broom)}
 \KeywordTok{tidy}\NormalTok{(fit)}
 \end{Highlighting}
 \end{Shaded}
