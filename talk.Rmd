@@ -21,7 +21,6 @@ knitr::opts_chunk$set(echo = FALSE, cache = TRUE)
 # Before we begin
 
 ```{r bibsetup}
-source("helper.R")
 pacman::p_load(RefManageR)
 BibOptions(check.entries = FALSE, 
            bib.style = "authoryear", 
@@ -33,9 +32,20 @@ bib <- ReadBib(file.name)
 
 ---
 
-## This is about a new R package
+## Acknowledgements
 
-![Hex sticker](images/hexicon.png)
+First of all, thanks to Vilma Romero for providing a cool template!
+
+---
+
+## Contents of the talk
+
+* A bit of statistical/economic theory
+* Our new R package `gravity`
+
+```{r hexicon}
+knitr::include_graphics("images/hexicon.png", dpi = 150)
+```
 
 ---
 
