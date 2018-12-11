@@ -3,20 +3,15 @@ title: "Econometrics in R: Estimation of Gravity Models"
 author: "Pach\u00e1"
 institute: "satRday Santiago"
 date: "Dec 15, 2018"
-bibliography: references.bib
-csl: ieee.csl
 output:
-  beamer_presentation:
-    keep_tex: yes
-    citation_package: natbib
-    theme: metropolis
-    slide_level: 2
-    incremental: no
-    includes:
-      in_header: preamble.tex
-classoption: 
-  - compress
-  - "aspectratio=169"
+  xaringan::moon_reader:
+    css: ["kunoichi", "ninjutsu", "assets/custom.css"]
+    lib_dir: libs
+    nature:
+      ratio: "16:9"
+      highlightStyle: github
+      highlightLines: true
+      countIncrementalSlides: false
 ---
 
 ```{r setup, include=FALSE}
@@ -25,62 +20,95 @@ knitr::opts_chunk$set(echo = FALSE, cache = TRUE)
 
 # Before we begin
 
+```{r bibsetup}
+source("helper.R")
+pacman::p_load(RefManageR)
+BibOptions(check.entries = FALSE, 
+           bib.style = "authoryear", 
+           style = "markdown",
+           dashed = TRUE)
+file.name <- "references.bib"
+bib <- ReadBib(file.name)
+```
+
+---
+
 ## This is about a new R package
 
-![Hex sticker](hexicon.PNG)
+![Hex sticker](images/hexicon.png)
+
+---
 
 ## Where to reach me
 
-\faTwitter or \faGithub: pachamaltese
+**Twitter and Github: `pachamaltese`**
 
-\faEnvelopeO: `m vargas at dcc dot uchile dot cl`
+**Email: `m vargas at dcc dot uchile dot cl`**
 
-\faPhone: +1 XXX XXX XX XX or +56 X X XXX XX XX
+**Phone: `+1 XXX XXX XX XX or +56 X X XXX XX XX`**
 
-## Question to the audience
+---
 
-\LARGE{Do you understand (a bit) linear algebra?}
+## Questions to the audience
 
-\LARGE{Have you ever fitted a regression (in R) before today?}
+**Do you understand (a bit) linear algebra?**
+
+**Have you ever fitted a regression (in R) before today?**
+
+---
 
 ## Linear regression
+
+$$
+\renewcommand{\vec}[1]{\boldsymbol{#1}}
+\newcommand{\R}{\mathbb{R}}
+$$
 
 Let $\vec{y} \in \R^n$ be the outcome and $X \in \R^{n\times p}$ be the design matrix in the context of a general model with intercept:
 $$\vec{y} = X\vec{\beta} + \vec{e}$$
 
-Being: 
+Being:
+
 $$
+\begin{equation*}
 \underset{n\times 1}{\vec{y}} = \begin{pmatrix}y_0 \cr y_1 \cr \vdots \cr y_n\end{pmatrix}
 \text{ and }
 \underset{n\times p}{X} = \begin{pmatrix}1 & x_{11} & & x_{1p} \cr 1 & x_{21} & & x_{2p} \cr & \ddots & \cr 1 & x_{n1} & & x_{np}\end{pmatrix} = (\vec{1} \: \vec{x}_1 \: \ldots \: \vec{x}_p)
+\end{equation*}
 $$
+
+---
 
 ## Linear regression
 
 In linear models the aim is to minimize the error term by chosing $\hat{\vec{\beta}}$. One possibility is to minimize the squared error by solving this optimization problem:
 
+$$
 \begin{equation}
 \label{min}
 \displaystyle \min_{\vec{\beta}} S = \|\vec{y} - X\vec{\beta}\|^2
 \end{equation}
+$$
 
-## Linear regression
+Books such as `r RefManageR::Citet(bib, "Baltagi2011")` discuss how to solve this, and different equivalent approaches result in this optimal estimator:
 
-Books such as @Baltagi2011 discuss how to solve \eqref{min} and other equivalent approaches that result in this optimal estimator:
-
+$$
 \begin{equation}
 \label{beta}
 \hat{\vec{\beta}} = (X^tX)^{-1} X^t\vec{y}
 \end{equation}
+$$
 
-## Linear regression
+With one independent variable and intercept, this is $y_i = \beta_0 + \beta_1 x_{i1} + e_i$, $\vec{\beta}$ can be written as:
 
-With one independent variable and intercept, this is $y_i = \beta_0 + \beta_1 x_{i1} + e_i$, equation $\eqref{beta}$ means:
-\begin
-{equation}
+$$
+\begin{equation}
 \label{beta2}
 \hat{\beta}_1 = cor(\vec{y},\vec{x}) \cdot \frac{sd(\vec{y})}{sd(\vec{x})} \text{ and } \hat{\beta}_0 = \bar{y} - \hat{\beta}_1 \bar{\vec{x}}
 \end{equation}
+$$
+
+---
 
 ## Coding example with mtcars dataset
 
@@ -92,8 +120,6 @@ This is how to write that model in R notation:
 lm(mpg ~ wt + cyl, data = mtcars)
 ```
 
-## Coding example with mtcars dataset
-
 Or written in matrix form:
 ```{r anova_mtcars_example2, eval=TRUE, echo=TRUE}
 y <- mtcars$mpg
@@ -103,25 +129,26 @@ x2 <- mtcars$cyl
 X <- cbind(x0,x1,x2)
 ```
 
+---
+
 ## Coding example with mtcars dataset
 
-It's the same to use `lm` or to perform a matrix multiplication because of equation $\eqref{beta}$:
+It's the same to use `lm` or to perform a matrix multiplication:
 ```{r anova_mtcars_example3, eval=TRUE, echo=TRUE}
 fit <- lm(y ~ x1 + x2)
-beta <- solve(t(X)%*%X) %*% (t(X)%*%y)
-```
-
-## Coding example with mtcars dataset
-
-It's the same to use `lm` or to perform a matrix multiplication because of equation $\eqref{beta}$:
-```{r anova_mtcars_example4, eval=TRUE, echo=TRUE}
 coefficients(fit)
+
+# versus
+
+beta <- solve(t(X)%*%X) %*% (t(X)%*%y)
 beta
 ```
 
+---
+
 ## Coding example with Galton dataset
 
-Equation $\eqref{beta2}$ can be verified with R commands:
+Now let's check the correlation procedure:
 ```{r anova_galton_example1, warning=FALSE, message=FALSE, echo=TRUE}
 if (!require(pacman)) install.packages("pacman")
 pacman::p_load(HistData)
@@ -133,135 +160,165 @@ beta0 <- mean(y) - beta1 * mean(x)
 c(beta0, beta1)
 ```
 
-## Coding example with Galton dataset
-
-```{r anova_galton_example2}
-# comparing with lm results
-lm(y ~ x)
+```{r komolozupo}
+knitr::include_graphics("images/komolozupo.jpg", dpi = 150)
 ```
 
-## Coding example with Galton dataset
-
-![It's a match](komolozupo.jpg)
+---
 
 # Simple gravity model
 
+---
+
 ## Simple gravity model
 
-The main reference for this section is @Woelver2018 and the references therein.
+The main reference for this section is `r RefManageR::Citet(bib, "Woelver2018")` and the references therein.
 
 Gravity models in their traditional form are inspired by Newton law of gravitation:
+
 $$
+\begin{equation*}
 F_{ij}=G\frac{M_{i}M_{j}}{D^{2}_{ij}}.
+\end{equation*}
 $$
 
 The force $F$ between two bodies $i$ and $j$ with $i \neq j$ is proportional to the masses $M$ of these bodies and inversely proportional to the square of their geographical distance $D$. $G$ is a constant and as such of no major concern.
+
+---
 
 ## Simple gravity model
 
 The underlying idea of a traditional gravity model, shown for international trade, is equally simple:
 
 $$
+\begin{equation*}
 X_{ij}=G\frac{Y_{i}^{\beta_{1}}Y_{j}^{\beta_{2}}}{D_{ij}^{\beta_{3}}}.
+\end{equation*}
 $$
 
 The trade flow $X$ is explained by $Y_{i}$ and $Y_{j}$ that are the masses of the exporting and importing country (e.g. the GDP) and $D_{ij}$ that is the distance between the countries.
 
-## Simple gravity model
+**This is also used to study urban policies and migration flows!**
 
-\LARGE{This is also used to study urban policies and migration flows!}
+---
 
 ## Simple gravity model
 
 Dummy variables such as common borders $contig$ or regional trade agreements $rta$ can be added to the model. Let $t_{ij}$ be the transaction cost defined as:
 
 $$
+\begin{equation*}
 t_{ij}= D_{ij} \exp(contig_{ij} + rta_{ij})
+\end{equation*}
 $$
-
-## Simple gravity model
 
 So that the model with friction becomes:
 
 $$
+\begin{equation*}
 X_{ij}=G\frac{Y_{i}^{\beta_{1}}Y_{j}^{\beta_{2}}}{t_{ij}^{\beta_{3}}}.
+\end{equation*}
 $$
-
-## Simple gravity model
 
 A logarithmic operator can be applied to form a log-linear model and use a standard estimation methods such as OLS:
 
 $$
+\begin{equation*}
 \log X_{ij}=\beta_{0}\log G +\beta_{1}\log Y_{i}+\beta_{2}\log Y_{j}+\beta_{3}\log D_{ij}+\beta_{4}contig_{ij}+\beta_{5}rta_{ij}
+\end{equation*}
 $$
+
+---
 
 # Trade barriers model
 
-## Trade barriers model
-
-Basically the model proposes that the exports $X_{ij}$ from $i$ to $j$ are determined by the supply factors in $i$, $Y_{i}$, and the demand factors in $j$, $Y_{j}$, as well as the transaction costs $t_{ij}$.
-
-Next to information on bilateral partners $i$ and $j$, information on the rest of the world is included in the gravity model with $Y=\sum_{i} Y_{i}= \sum_{j} Y_{j}$ that represents the worldwide sum of incomes (e.g. the world's GDP).
+---
 
 ## Trade barriers model
 
-In this model $\sigma$ represents the elasticity of substitution between all goods. A key assumption is to take a fixed value $\sigma > 1$ in order to account for the preference for a variation of goods (e.g. in this model goods can be replaced for other similar goods).
+* Basically the model proposes that the exports $X_{ij}$ from $i$ to $j$ are determined by the supply factors in $i$, $Y_{i}$, and the demand factors in $j$, $Y_{j}$, as well as the transaction costs $t_{ij}$.
+
+* Next to information on bilateral partners $i$ and $j$, information on the rest of the world is included in the gravity model with $Y=\sum_{i} Y_{i}= \sum_{j} Y_{j}$ that represents the worldwide sum of incomes (e.g. the world's GDP).
+
+---
 
 ## Trade barriers model
 
-The Multilateral Resistance terms are included via the terms $P$, Inward Multilateral Resistance, and $\Pi$, Outward Multilateral Resistance. 
+* In this model $\sigma$ represents the elasticity of substitution between all goods. 
 
-The Inward Multilateral Resistance $P_i$ is a function of the transaction costs of $i$ to all trade partners $j$.
+* A key assumption is to take a fixed value $\sigma > 1$ in order to account for the preference for a variation of goods (e.g. in this model goods can be replaced for other similar goods).
 
-The Outward Multilateral Resistance $\Pi_{j}$ is a function of the transaction costs of $j$ to all trade partners $i$ and their demand.
+* The Multilateral Resistance terms are included via the terms $P$, Inward Multilateral Resistance, and $\Pi$, Outward Multilateral Resistance. 
 
-The Multilateral Resistance terms dependent on each other. Hence, the estimation of structural gravity models becomes *complex*.
+* The Inward Multilateral Resistance $P_i$ is a function of the transaction costs of $i$ to all trade partners $j$.
 
-## Trade barriers model
+* The Outward Multilateral Resistance $\Pi_{j}$ is a function of the transaction costs of $j$ to all trade partners $i$ and their demand.
 
-![What?](pikachu.jpg)
+* The Multilateral Resistance terms dependent on each other. Hence, the estimation of structural gravity models becomes *complex*.
+
+```{r pikachu}
+knitr::include_graphics("images/pikachu.jpg", dpi = 350)
+```
+
+---
 
 ## Trade barriers model
 
 The econometric literature proposes the Multilateral Resistance model defined by the equations:
 
 $$
+\begin{equation*}
 X_{ij}=\frac{Y_{i}Y_{j}}{Y}\frac{t_{ij}^{1-\sigma}}{P_{j}^{1-\sigma}\Pi_{i}^{1-\sigma}}
+\end{equation*}
 $$
 with
 $$
+\begin{equation*}
 P_{i}^{1-\sigma}=\sum_{j}\frac{t_{ij}^{1-\sigma}}{\Pi_{j}^{1-\sigma}}\frac{Y_{j}}{Y};\:\Pi_{j}^{1-\sigma}=\sum_{i}\frac{t_{ij}^{1-\sigma}}{P_{i}^{1-\sigma}}\frac{Y_{i}}{Y}
+\end{equation*}
 $$
 
-## Trade barriers model
 
-![Again, what?](raichu.jpg)
+```{r raichu}
+knitr::include_graphics("images/raichu.jpg", dpi = 300)
+```
+
+---
 
 # Model estimation
 
-## Model estimation
-
-To estimate gravity equations you need a square dataset including bilateral flows defined by the argument dependent_variable, a distance measure defined by the argument distance that is the key regressor, and other potential influences (e.g. contiguity and common currency) given as a vector in additional_regressors are required.
-
-Some estimation methods require ISO codes or similar of type character variables to compute particular country effects. Make sure the origin and destination codes are of type "character".
+---
 
 ## Model estimation
 
-The rule of thumb for regressors or independent variables consists in:
+* To estimate gravity equations you need a square dataset including bilateral flows defined by the argument `dependent_variable`, a distance measure defined by the argument `distance` that is the key regressor, and other potential influences (e.g. contiguity and common currency) given as a vector in `additional_regressors` are required.
 
-* All dummy variables should be of type numeric (0/1).
-* If an independent variable is defined as a ratio, it should be logged.
+* Some estimation methods require ISO codes or similar of type character variables to compute particular country effects. Make sure the origin and destination codes are of type "character".
 
-The user should perform some data cleaning beforehand to remove observations that contain entries that
+---
+
+## Model estimation
+
+* The rule of thumb for regressors or independent variables consists in:
+  * All dummy variables should be of type numeric (0/1).
+  * If an independent variable is defined as a ratio, it should be logged.
+
+* The user should perform some data cleaning beforehand to remove observations that contain entries that
 can distort estimates, notwithstanding the functions provided within gravity package will remove zero flows and distances.
+
+---
 
 # Examples
 
+---
+
 ## Double Demeaning
 
-Double Demeaning subtracts importer and exporter averages on the left and right hand side of the respective gravity equation, and all unilateral influences including the Multilateral Resistance terms vanish. 
+* Double Demeaning subtracts importer and exporter averages on the left and right hand side of the respective gravity equation, and all unilateral influences including the Multilateral Resistance terms vanish. 
 
-Therefore, no unilateral variables may be added as independent variables for the estimation.
+* Therefore, no unilateral variables may be added as independent variables for the estimation.
+
+---
 
 ## Double Demeaning
 
@@ -269,16 +326,18 @@ Our ddm function first logs the dependent variable and the distance variable.
 
 Afterwards, the dependent and independent variables are transformed in the following way (exemplary shown for trade flows, $X_{ij}$):
 $$
+\begin{equation*}
 (\log X_{ij})_{\text{DDM}} = (\log X_{ij}) - (\log X_{ij})_{\text{Origin Mean}} - (\log X_{ij})_{\text{Destination Mean}} + (\log X_{ij})_{\text{Mean}}.
+\end{equation*}
 $$
-
-## Double Demeaning
 
 One subtracts the mean value for the origin country and the mean value for the destination country and adds the overall mean value to the logged trade flows. 
 
 This procedure is repeated for all dependent and independent variables. The transformed variables are then used for the estimation.
 
 <!-- DDM is easily applied, but, as shown in @Head2014, its very sensitive to missing data. -->
+
+---
 
 ## Double Demeaning
 
@@ -296,11 +355,7 @@ fit <- ddm(
   )
 ```
 
-<!-- ## Double Demeaning -->
-
-<!-- ```{r ddm2} -->
-<!-- summary(fit) -->
-<!-- ``` -->
+---
 
 ## Double Demeaning
 
@@ -310,11 +365,15 @@ pacman::p_load(dplyr, broom)
 tidy(fit)
 ```
 
+---
+
 ## Double Demeaning
 
 ```{r ddm4, echo=TRUE}
 glance(fit) %>% select(matches("squared"))
 ```
+
+---
 
 ## Double Demeaning
 
@@ -330,6 +389,8 @@ ddm <- function(dependent_variable,
                 data, ...) {
 ...
 ```
+
+---
 
 ## Double Demeaning
 
@@ -349,6 +410,8 @@ How does the internal code work?
 ...
 ```
 
+---
+
 ## Double Demeaning
 
 How does the internal code work?
@@ -361,6 +424,8 @@ How does the internal code work?
     )
 ...
 ```
+
+---
 
 ## Double Demeaning
 
@@ -381,24 +446,31 @@ How does the internal code work?
 ...
 ```
 
+---
+
 # Code and documentation
+
+---
 
 ## Code and documentation
 
-\LARGE{github.com/pachamaltese/gravity}
+**github.com/pachamaltese/gravity**
 
-\LARGE{pacha.hk/gravity}
+**pacha.hk/gravity**
+
+---
 
 # Questions?
 
-## Questions?
 
-\LARGE{Thanks for your attention!}
+---
 
 # References
 
-## References
-
 ```{r, results="asis", echo=FALSE}
-# PrintBibliography(bib) 
+PrintBibliography(bib)
 ```
+
+---
+
+# Thanks for your attention!
