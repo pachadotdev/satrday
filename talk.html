@@ -267,8 +267,6 @@ $$
 
 ## Trade barriers model
 
-* In this model `\(\sigma\)` represents the elasticity of substitution between all goods. 
-
 * A key assumption is to take a fixed value `\(\sigma &gt; 1\)` in order to account for the preference for a variation of goods (e.g. in this model goods can be replaced for other similar goods).
 
 * The Multilateral Resistance terms are included via the terms `\(P\)`, Inward Multilateral Resistance, and `\(\Pi\)`, Outward Multilateral Resistance. 
@@ -279,7 +277,7 @@ $$
 
 * The Multilateral Resistance terms dependent on each other. Hence, the estimation of structural gravity models becomes *complex*.
 
-&lt;img src="images/pikachu.jpg" width="259" /&gt;
+&lt;img src="images/pikachu.jpg" width="227" /&gt;
 
 ---
 
@@ -416,86 +414,188 @@ glance(fit) %&gt;% select(matches("squared"))
 
 ## Double Demeaning
 
-How does the internal code work?
+How to do it without the function?
 
 
 ```r
-ddm &lt;- function(dependent_variable,
-                distance,
-                additional_regressors = NULL,
-                code_origin,
-                code_destination,
-                robust = FALSE,
-                data, ...) {
-...
+d &lt;- gravity_no_zeros %&gt;%
+  mutate(
+    dist_log = log(distw), # Transforming data, logging distances
+    y_log = log(flow) # Transforming data, logging flows
+  )
 ```
 
 ---
 
 ## Double Demeaning
-
-How does the internal code work?
-
-
-```r
-# Checks
-  stopifnot(is.data.frame(data))
-  stopifnot(is.logical(robust))
-...
-
-# Transforming data, logging distances
-  d &lt;- d %&gt;%
-    mutate(
-      dist_log = log(!!sym(distance))
-    )
-...
-```
-
----
-
-## Double Demeaning
-
-How does the internal code work?
-
-
-```r
-# Transforming data, logging flows
-  d &lt;- d %&gt;%
-    mutate(
-      y_log = log(!!sym(dependent_variable))
-    )
-...
-```
-
----
-
-## Double Demeaning
-
-How does the internal code work?
 
 
 ```r
 # Substracting the means
-  d &lt;- d %&gt;%
-    mutate(
-      y_log_ddm = !!sym("y_log"),
-      dist_log_ddm = !!sym("dist_log")
-    ) %&gt;%
-    group_by(!!sym(code_origin), add = FALSE) %&gt;%
-    mutate(
-      ym1 = mean(!!sym("y_log_ddm"), na.rm = TRUE),
-      dm1 = mean(!!sym("dist_log_ddm"), na.rm = TRUE)
-    ) %&gt;%
-...
+d &lt;- d %&gt;%
+  mutate(
+    y_log_ddm = y_log,
+    dist_log_ddm = dist_log
+  ) %&gt;%
+  
+  group_by(iso_o, add = FALSE) %&gt;%
+  mutate(
+    ym1 = mean(y_log_ddm, na.rm = TRUE),
+    dm1 = mean(dist_log_ddm, na.rm = TRUE)
+  ) %&gt;% 
+  
+  group_by(iso_d, add = FALSE) %&gt;%
+  mutate(
+    ym2 = mean(y_log_ddm, na.rm = TRUE),
+    dm2 = mean(dist_log_ddm, na.rm = TRUE)
+  )
+```
+
+---
+
+## Double Demeaning
+
+
+```r
+# Substracting the means
+d &lt;- d %&gt;%
+  group_by(iso_o, add = FALSE) %&gt;%
+  mutate(
+    y_log_ddm = y_log_ddm - ym1,
+    dist_log_ddm = dist_log_ddm - dm1
+  ) %&gt;%
+  
+  group_by(iso_d, add = FALSE) %&gt;%
+  mutate(
+    y_log_ddm = y_log_ddm - ym2,
+    dist_log_ddm = dist_log_ddm - dm2
+  )
+```
+
+---
+
+## Double Demeaning
+
+
+```r
+# Substracting the means
+d &lt;- d %&gt;%
+  ungroup() %&gt;%
+  mutate(
+    y_log_ddm = y_log_ddm + mean(y_log, na.rm = TRUE),
+    dist_log_ddm = dist_log_ddm + mean(dist_log, na.rm = TRUE)
+  )
+```
+
+---
+
+## Double Demeaning
+
+
+```r
+# Substracting the means for the other independent variables
+pacman::p_load(tidyr)
+
+d2 &lt;- d %&gt;%
+  select(iso_o, iso_d, rta, comcur, contig) %&gt;%
+  gather(key, value, -iso_o, -iso_d) %&gt;%
+  mutate(key = paste0(key, "_ddm")) %&gt;%
+  
+  group_by(iso_o, key, add = FALSE) %&gt;%
+  mutate(ddm = value - mean(value, na.rm = TRUE)) %&gt;%
+  
+  group_by(iso_d, key, add = FALSE) %&gt;%
+  mutate(ddm = ddm - mean(value, na.rm = TRUE)) %&gt;%
+  
+  ungroup() %&gt;%
+  mutate(value = ddm + mean(value, na.rm = TRUE)) %&gt;%
+  
+  select(iso_o, iso_d, key, value) %&gt;%
+  spread(key, value)
+```
+
+---
+
+## Double Demeaning
+
+
+```r
+# Model
+d &lt;- left_join(d, d2, by = c("iso_o", "iso_d")) %&gt;%
+  select(y_log_ddm, ends_with("_ddm"))
+
+vars &lt;- paste(c("dist_log_ddm", paste0(c("rta", "comcur", "contig"), "_ddm"), 0), collapse = " + ")
+
+form &lt;- stats::as.formula(paste("y_log_ddm", "~", vars))
+
+model_ddm &lt;- stats::lm(form, data = d)
+
+tidy(model_ddm)
+```
+
+```
+## # A tibble: 4 x 5
+##   term         estimate std.error statistic  p.value
+##   &lt;chr&gt;           &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;    &lt;dbl&gt;
+## 1 dist_log_ddm   -1.60     0.0331    -48.4  0.      
+## 2 rta_ddm         0.797    0.0700     11.4  6.54e-30
+## 3 comcur_ddm      0.174    0.146       1.19 2.34e- 1
+## 4 contig_ddm      1.00     0.120       8.36 6.62e-17
+```
+
+---
+
+## Double Demeaning
+
+Inside `ddm()` the argument `robust=TRUE` is equivalent to replace `lm` by `rlm` in the last part:
+
+
+```r
+model_ddm &lt;- MASS::rlm(form, data = d)
+tidy(model_ddm)
+```
+
+```
+## # A tibble: 4 x 4
+##   term         estimate std.error statistic
+##   &lt;chr&gt;           &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;
+## 1 dist_log_ddm   -1.60     0.0311    -51.7 
+## 2 rta_ddm         0.656    0.0657      9.99
+## 3 comcur_ddm      0.507    0.137       3.70
+## 4 contig_ddm      1.12     0.112       9.93
+```
+
+---
+
+## Double Demeaning
+
+
+```r
+fit2 &lt;- ddm(
+    dependent_variable = "flow",
+    distance = "distw",
+    additional_regressors = c("rta", "comcur", "contig"),
+    code_origin = "iso_o",
+    code_destination = "iso_d",
+    data = gravity_no_zeros,
+    robust = TRUE
+  )
+tidy(fit2)
+```
+
+```
+## # A tibble: 4 x 4
+##   term         estimate std.error statistic
+##   &lt;chr&gt;           &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;
+## 1 dist_log_ddm   -1.60     0.0311    -51.7 
+## 2 rta_ddm         0.656    0.0657      9.99
+## 3 comcur_ddm      0.507    0.137       3.70
+## 4 contig_ddm      1.12     0.112       9.93
 ```
 
 ---
 
 # Code and documentation
-
----
-
-## Code and documentation
 
 **github.com/pachamaltese/gravity**
 
@@ -504,7 +604,6 @@ How does the internal code work?
 ---
 
 # Questions?
-
 
 ---
 
