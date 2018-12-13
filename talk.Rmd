@@ -1,5 +1,6 @@
 ---
-title: "Econometrics in R: Estimation of Gravity Models"
+title: "Econometrics in R"
+subtitle: "Estimation of Gravity Models"
 author: "Pach\u00e1"
 institute: "satRday Santiago"
 date: "Dec 15, 2018"
@@ -34,7 +35,11 @@ bib <- ReadBib(file.name)
 
 ## Acknowledgements
 
-First of all, thanks to Vilma Romero for providing a cool template!
+Thanks to:
+
+* Anna-Lenna Woelver and Jan Pablo Burgard fron Trier University (gravity 1st version)
+* Joshua Kunst from PUC Chile (gravity re-writting using rlang)
+* Vilma Romero (made this cool template available)
 
 ---
 
@@ -42,10 +47,6 @@ First of all, thanks to Vilma Romero for providing a cool template!
 
 * A bit of statistical/economic theory
 * Our new R package `gravity`
-
-```{r hexicon}
-knitr::include_graphics("images/hexicon.png", dpi = 150)
-```
 
 ---
 

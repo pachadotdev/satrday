@@ -48,9 +48,9 @@
 body { font-family: "Fira Sans", sans-serif; }
 
 .remark-slide {
-  background-image: url("https://satrdays.org/img/carousel/satRdayLogo.png"), url("../bkg/kate-hazen-pop-space.png");
-  background-size:  10%, contain;
-  background-position: left top, left top;
+  background-image: url("../bkg/space-bkg.png");
+  background-size:  contain;
+  background-position: left top;
   background-repeat: no-repeat;
 }
 
