@@ -45,6 +45,7 @@ Thanks to:
 
 ## Contents of the talk
 
+* Lifegoals
 * A bit of statistical/economic theory
 * Our new R package `gravity`
 
@@ -57,6 +58,54 @@ Thanks to:
 **Email: `m vargas at dcc dot uchile dot cl`**
 
 **Phone: `+1 XXX XXX XX XX or +56 X X XXX XX XX`**
+
+---
+
+## Lifegoals
+
+No matter if you are an expert or beginner user:
+
+* Don't use `setwd()`
+* Writing `setwd("~/github/satrday-talk/file.csv)` goes **against** reproducibility
+* Use RStudio projects instead
+
+---
+
+## Lifegoals
+
+No matter if you are an expert or beginner user:
+
+* Lifegoals (or how to use R well)
+* Don't use `rm(list = ls())`
+* Restart the session instead
+
+---
+
+## Lifegoals
+
+If Jenny Bryan discovers you doing all of the previous, she will come into your office and [set your computer on fire](https://www.tidyverse.org/articles/2017/12/workflow-vs-script/)
+
+```{r computeronfire}
+knitr::include_graphics("images/computeonfire.png", dpi = 150)
+```
+
+---
+
+## Lifegoals
+
+* Please use Git (i.e. Github, Gitlab, Bitbucket, etc)
+* Commit to save your progress
+* If you screw up your code you can always go back
+
+---
+
+## Lifegoals
+
+Please finish your sandwich or Solenya will come with a laser beam
+
+```{r picklerick}
+knitr::include_graphics("images/picklerick.jpg", dpi = 200)
+```
 
 ---
 
