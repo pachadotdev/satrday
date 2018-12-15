@@ -40,7 +40,7 @@ Thanks to:
 
 ## Contents of the talk
 
-* Lifegoals
+* Lifegoals (or how to use R well)
 * A bit of statistical/economic theory
 * Our new R package `gravity`
 
@@ -70,7 +70,6 @@ No matter if you are an expert or beginner user:
 
 No matter if you are an expert or beginner user:
 
-* Lifegoals (or how to use R well)
 * Don't use `rm(list = ls())`
 * Restart the session instead
 
@@ -94,7 +93,26 @@ If Jenny Bryan discovers you doing all of the previous, she will come into your 
 
 ## Lifegoals
 
-Please finish your sandwich or Solenya will come with a laser beam
+* If you work with others, using packrat is desirable
+* But it is really important that you write well (descriptive names + stylesheets)
+
+
+```r
+# Don't do this
+x=read.csv("data_2_use_this.csv");x=x[,-1];a=x$x2
+
+# Do this
+latam &lt;- read_csv("latam_region_trade_data.csv") %&gt;% select(-country_name)
+iso_codes &lt;- select(latam, country_iso)
+```
+
+ifyoudontwritewellitshardtobeunderstood
+
+---
+
+## Lifegoals
+
+FInally, finish your sandwich or Solenya will come with a laser beam
 
 &lt;img src="images/picklerick.jpg" width="614" /&gt;
 
