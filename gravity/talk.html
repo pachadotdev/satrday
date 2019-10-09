@@ -1,12 +1,12 @@
 <!DOCTYPE html>
-<html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
   <head>
     <title>Econometrics in R</title>
-    <meta charset="utf-8">
+    <meta charset="utf-8" />
     <meta name="author" content="Pachá" />
     <link href="libs/remark-css-0.0.1/kunoichi.css" rel="stylesheet" />
     <link href="libs/remark-css-0.0.1/ninjutsu.css" rel="stylesheet" />
-    <link rel="stylesheet" href="assets/custom.css" type="text/css" />
+    <link rel="stylesheet" href="assets\custom.css" type="text/css" />
   </head>
   <body>
     <textarea id="source">
@@ -15,6 +15,7 @@ class: center, middle, inverse, title-slide
 # Econometrics in R
 ## Estimation of Gravity Models
 ### Pachá
+### satRday Santiago
 ### Dec 15, 2018
 
 ---
@@ -112,7 +113,7 @@ ifyoudontwritewellitshardtobeunderstood
 
 ## Lifegoals
 
-FInally, finish your sandwich or Solenya will come with a laser beam
+Finally, finish your sandwich or Solenya will come with a laser beam
 
 &lt;img src="images/picklerick.jpg" width="614" /&gt;
 
@@ -472,7 +473,7 @@ glance(fit) %&gt;% select(matches("squared"))
 ```
 ## # A tibble: 1 x 2
 ##   r.squared adj.r.squared
-## *     &lt;dbl&gt;         &lt;dbl&gt;
+##       &lt;dbl&gt;         &lt;dbl&gt;
 ## 1     0.254         0.254
 ```
 
@@ -678,18 +679,28 @@ tidy(fit2)
 &lt;a name=bib-Baltagi2011&gt;&lt;/a&gt;[Baltagi, B. H.](#cite-Baltagi2011)
 (2011). _Econometrics_. Springer Texts in Business and Economics
 978-3-642-20059-5. Springer. DOI:
-[10.1007/978-1-4614-3169-5](https://doi.org/10.1007/978-1-4614-3169-5).
+[10.1007/978-1-4614-3169-5](https://doi.org/10.1007%2F978-1-4614-3169-5).
 
 &lt;a name=bib-Woelver2018&gt;&lt;/a&gt;[Woelwer, A. L, J. P. Burgard, J.
 Kunst, et al.](#cite-Woelver2018) (2018). "Gravity: Estimation
 Methods for Gravity Models in R". In: _Journal of Open Source
 Software_ 31.3, p. 1038. DOI:
-[10.21105/joss.01038](https://doi.org/10.21105/joss.01038).
+[10.21105/joss.01038](https://doi.org/10.21105%2Fjoss.01038).
 
 ---
 
-# Thanks for your attention!
+&lt;center&gt;
+&lt;h3&gt;
+This work is licensed as
+
+**Creative Commons Attribution-NonCommercial 4.0 International**
+
+To view a copy of this license visit
+https://creativecommons.org/licenses/by-nc/4.0/
+&lt;/h3&gt;
+&lt;center&gt;
     </textarea>
+<style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
 <script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
 <script>var slideshow = remark.create({
 "ratio": "16:9",
@@ -700,16 +711,57 @@ Software_ 31.3, p. 1038. DOI:
 if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
   window.dispatchEvent(new Event('resize'));
 });
-(function() {
-  var d = document, s = d.createElement("style"), r = d.querySelector(".remark-slide-scaler");
+(function(d) {
+  var s = d.createElement("style"), r = d.querySelector(".remark-slide-scaler");
   if (!r) return;
   s.type = "text/css"; s.innerHTML = "@page {size: " + r.style.width + " " + r.style.height +"; }";
   d.head.appendChild(s);
+})(document);
+
+(function(d) {
+  var el = d.getElementsByClassName("remark-slides-area");
+  if (!el) return;
+  var slide, slides = slideshow.getSlides(), els = el[0].children;
+  for (var i = 1; i < slides.length; i++) {
+    slide = slides[i];
+    if (slide.properties.continued === "true" || slide.properties.count === "false") {
+      els[i - 1].className += ' has-continuation';
+    }
+  }
+  var s = d.createElement("style");
+  s.type = "text/css"; s.innerHTML = "@media print { .has-continuation { display: none; } }";
+  d.head.appendChild(s);
+})(document);
+// delete the temporary CSS (for displaying all slides initially) when the user
+// starts to view slides
+(function() {
+  var deleted = false;
+  slideshow.on('beforeShowSlide', function(slide) {
+    if (deleted) return;
+    var sheets = document.styleSheets, node;
+    for (var i = 0; i < sheets.length; i++) {
+      node = sheets[i].ownerNode;
+      if (node.dataset["target"] !== "print-only") continue;
+      node.parentNode.removeChild(node);
+    }
+    deleted = true;
+  });
 })();</script>
 
 <script>
 (function() {
-  var i, text, code, codes = document.getElementsByTagName('code');
+  var links = document.getElementsByTagName('a');
+  for (var i = 0; i < links.length; i++) {
+    if (/^(https?:)?\/\//.test(links[i].getAttribute('href'))) {
+      links[i].target = '_blank';
+    }
+  }
+})();
+</script>
+
+<script>
+slideshow._releaseMath = function(el) {
+  var i, text, code, codes = el.getElementsByTagName('code');
   for (i = 0; i < codes.length;) {
     code = codes[i];
     if (code.parentNode.tagName !== 'PRE' && code.childElementCount === 0) {
@@ -723,7 +775,8 @@ if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
     }
     i++;
   }
-})();
+};
+slideshow._releaseMath(document);
 </script>
 <!-- dynamically load mathjax for compatibility with self-contained -->
 <script>

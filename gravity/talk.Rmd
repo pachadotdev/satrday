@@ -118,7 +118,7 @@ ifyoudontwritewellitshardtobeunderstood
 
 ## Lifegoals
 
-FInally, finish your sandwich or Solenya will come with a laser beam
+Finally, finish your sandwich or Solenya will come with a laser beam
 
 ```{r picklerick}
 knitr::include_graphics("images/picklerick.jpg", dpi = 200)
@@ -615,4 +615,13 @@ PrintBibliography(bib)
 
 ---
 
-# Thanks for your attention!
+<center>
+<h3>
+This work is licensed as
+
+**Creative Commons Attribution-NonCommercial 4.0 International**
+
+To view a copy of this license visit
+https://creativecommons.org/licenses/by-nc/4.0/
+</h3>
+<center>
